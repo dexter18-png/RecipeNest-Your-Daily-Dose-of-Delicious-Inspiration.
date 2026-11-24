@@ -41,14 +41,43 @@
 <button aria-label="Dusty rose" class="palette-swatch rose" data-palette="rose" title="Dusty rose" type="button"></button>
 </div>
 <a class="nav-button" data-app-view="recipe" href="#recipe-view">Start Cooking →</a>
-<!-- Profile button -->
-<a aria-expanded="false" aria-haspopup="true" aria-label="Open Login or Profile" class="profile-button" data-app-view="profile" href="#profile-view" role="button">
-<svg fill="none" height="23" stroke="currentColor" stroke-linecap="round" stroke-width="1.8" viewBox="0 0 24 24" width="23">
-<circle cx="12" cy="8" r="4"></circle>
-<path d="M4 21 C4 16 8 14 12 14
-                     C16 14 20 16 20 21"></path>
-</svg>
-</a>
+<!-- Profile button: opens the profile menu without navigating immediately -->
+<button
+    aria-expanded="false"
+    aria-haspopup="true"
+    aria-label="Open Login or Profile menu"
+    aria-controls="profileMenu"
+    class="profile-button"
+    id="profileButton"
+    type="button"
+>
+    <svg
+        fill="none"
+        height="23"
+        viewBox="0 0 24 24"
+        width="23"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-width="1.8"
+    >
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 21 C4 16 8 14 12 14 C16 14 20 16 20 21"></path>
+    </svg>
+</button>
+
+<!-- Profile dropdown: contains account access only -->
+<div class="profile-menu" id="profileMenu" hidden>
+    <a
+        data-app-view="profile"
+        href="#profile-view"
+    >
+        Profile / Sign in
+    </a>
+
+    <small class="palette-hint">
+        Choose a header colour using the six circles in the navigation bar.
+    </small>
+</div>
 <!-- Mobile-only button for opening the sidebar navigation. -->
 <button aria-controls="mainSidebar" aria-expanded="false" class="sidebar-toggle" id="sidebarToggle" type="button">
 <span aria-hidden="true">☰</span> Menu
@@ -434,11 +463,9 @@
 <form id="demoAuthForm"><label hidden="">Full name<input id="authName" placeholder="Your name" type="text"/></label><label>Email address<input id="authEmail" placeholder="you@example.com" required="" type="email"/></label><label>Password<input id="authPassword" minlength="6" placeholder="At least 6 characters" required="" type="password"/></label><label hidden="" id="confirmPasswordWrap">Confirm password<input id="authConfirm" minlength="6" placeholder="Repeat your password" type="password"/></label><label class="remember-label"><input id="rememberMe" type="checkbox"/> Remember this demo profile on this browser</label><button id="authSubmit" type="submit">Continue</button><button class="text-button" id="forgotPassword" type="button">Forgot password?</button></form>
 <button class="text-button" id="authModeToggle" type="button">Create a demo profile instead</button><button hidden="" id="logoutButton" type="button">Log out</button><button class="text-button danger-text" id="resetSavedData" type="button">Reset saved planner data</button>
 </div>
-</section></div><div class="profile-menu" hidden="" id="profileMenu">
-<a data-profile-action="profile" href="#profile-view">Profile / Sign in</a>
-<a data-app-view="recipe" href="#recipe-view">Recipe Planner</a><a data-app-view="meal" href="#meal-view">Meal Planner</a>
-<small class="palette-hint">Choose a header colour using the six circles in the navigation bar.</small>
-</div></main>
+</section></div>
+
+</main>
 <!-- ================= FOOTER ================= -->
 <footer>
 <a aria-label="RecipeNest home" class="logo" data-app-view="home" href="#home">
