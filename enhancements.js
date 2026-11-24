@@ -36,31 +36,33 @@ Front-end demonstration only. No passwords are stored.
     const profileMenu = document.getElementById("profileMenu");
     const profilePanel = document.getElementById("profilePanel");
     function closeMenu() {
-        profileMenu.hidden = true;
-        profileButton.setAttribute("aria-expanded", "false");
+        if (profileMenu) profileMenu.hidden = true;
+        if (profileButton) profileButton.setAttribute("aria-expanded", "false");
     }
 
-    profileButton.addEventListener("click", function (event) {
+    if (profileButton && profileMenu) profileButton.addEventListener("click", function (event) {
         event.preventDefault();
         profileMenu.hidden = !profileMenu.hidden;
         profileButton.setAttribute("aria-expanded", String(!profileMenu.hidden));
     });
 
     document.addEventListener("click", function (event) {
+        if (!profileMenu || !profileButton) return;
         const clickedOutsideMenu = !profileMenu.contains(event.target);
         const clickedOutsideButton = !profileButton.contains(event.target);
-
-        if (clickedOutsideMenu && clickedOutsideButton) {
-            closeMenu();
-        }
+        if (clickedOutsideMenu && clickedOutsideButton) closeMenu();
     });
 
-    document.querySelector('[data-profile-action="profile"]').addEventListener("click", function () {
+    // The HTML uses a data-app-view link, not data-profile-action.
+    const profileMenuLink = profileMenu && profileMenu.querySelector('a[data-app-view="profile"]');
+    if (profileMenuLink) profileMenuLink.addEventListener("click", function () {
         closeMenu();
-        profilePanel.hidden = false;
+        if (profilePanel) profilePanel.hidden = false;
+        document.dispatchEvent(new CustomEvent("recipenest-profile-opened"));
     });
 
-    document.getElementById("closeProfile").addEventListener("click", function () {
+    const closeProfileButton = document.getElementById("closeProfile");
+    if (closeProfileButton && profilePanel) closeProfileButton.addEventListener("click", function () {
         profilePanel.hidden = true;
     });
 

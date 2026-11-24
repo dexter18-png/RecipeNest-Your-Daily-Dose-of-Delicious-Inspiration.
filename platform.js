@@ -180,7 +180,9 @@ recipe details, colour palettes and saved progress.
             modal.querySelector(".modal-close").addEventListener("click", function () { modal.hidden = true; });
             modal.addEventListener("click", function (event) { if (event.target === modal) modal.hidden = true; });
         }
-        document.getElementById("recipeDetailBody").innerHTML = `<img class="detail-photo" src="${recipeImage(recipe)}" alt="${esc(recipe.name)}"><span class="eyebrow">${esc(recipe.cuisine)} · ${esc(categoryLabel(recipe.category))} · ${esc(recipe.origin)}</span><h2 id="detailTitle">${esc(recipe.name)}</h2><p>${esc(recipe.description)}</p><div class="detail-stats"><span>Prep ${recipe.prepMinutes} min</span><span>Cook ${recipe.cookMinutes} min</span><span>${recipe.servings} servings</span><span>${recipe.calories} kcal / serving</span></div><h3>Ingredients</h3><ul>${recipe.ingredients.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("")}</ul><h3>How to make it</h3><ol>${recipe.instructions.map(function (step) { return "<li>" + esc(step) + "</li>"; }).join("")}</ol><button type="button" class="primary-button" id="detailAddRecipe">Add to meal plan</button>`;
+        const ingredients = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+        const instructions = Array.isArray(recipe.instructions) ? recipe.instructions : buildSteps({ name: recipe.name || "Recipe", category: recipe.category || "Dinner", ingredients: ingredients });
+        document.getElementById("recipeDetailBody").innerHTML = `<img class="detail-photo" src="${recipeImage(recipe)}" alt="${esc(recipe.name || "Recipe")}"><span class="eyebrow">${esc(recipe.cuisine || "Global")} · ${esc(categoryLabel(recipe.category || "Recipe"))} · ${esc(recipe.origin || "International")}</span><h2 id="detailTitle">${esc(recipe.name || "Recipe")}</h2><p>${esc(recipe.description || "A delicious recipe to try at home.")}</p><div class="detail-stats"><span>Prep ${Number(recipe.prepMinutes) || 0} min</span><span>Cook ${Number(recipe.cookMinutes) || Number(recipe.minutes) || 0} min</span><span>${Number(recipe.servings) || 2} servings</span><span>${Number(recipe.calories) || 0} kcal / serving</span></div><h3>Ingredients</h3><ul>${ingredients.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("")}</ul><h3>How to make it</h3><ol>${instructions.map(function (step) { return "<li>" + esc(step) + "</li>"; }).join("")}</ol><button type="button" class="primary-button" id="detailAddRecipe">Add to meal plan</button>`;
         modal.hidden = false;
         document.getElementById("detailAddRecipe").addEventListener("click", function () { addToMealPlan(recipe); modal.hidden = true; });
     }
@@ -247,7 +249,8 @@ recipe details, colour palettes and saved progress.
     };
 
     // Event delegation for recipe cards and meal removal.
-    document.getElementById("recipeGrid").addEventListener("click", function (event) {
+    const recipeGrid = document.getElementById("recipeGrid");
+    if (recipeGrid) recipeGrid.addEventListener("click", function (event) {
         const view = event.target.closest("[data-view-recipe]");
         const add = event.target.closest("[data-add-recipe]");
         if (view) { const recipe = RECIPES.find(function (r) { return r.id === Number(view.dataset.viewRecipe); }); if (recipe) showRecipeDetails(recipe); }
@@ -389,7 +392,8 @@ recipe details, colour palettes and saved progress.
         const dietChoice = document.getElementById("dietPreference").value;
         target.textContent = count + " planned recipes · " + total + " / " + goal + " kcal · " + Math.max(0, goal - total) + " kcal remaining · Diet: " + dietChoice + " · Water: " + waterNow + "/" + waterTarget + " glasses · " + getGroceryItems().length + " grocery items";
     }
-    document.querySelector('[data-profile-action="profile"]').addEventListener("click", updateProfileSummary);
+    // Refresh profile stats when the existing profile link opens the panel.
+    document.addEventListener("recipenest-profile-opened", updateProfileSummary);
     document.addEventListener("recipenest-profile-opened", updateProfileSummary);
 
     // Sign-up confirmation is checked locally; passwords are never saved.
